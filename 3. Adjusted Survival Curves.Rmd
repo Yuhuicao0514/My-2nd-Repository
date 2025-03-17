@@ -6,7 +6,7 @@ date: "2025.03.11 Tue"
 output: pdf_document
 ---
 
-**Adjusted survival curves** are used to visualize survival probabilities while controlling for covariates in a **Cox proportional hazards model**. 
+**Adjusted survival curves (LOVE SURVIVAL)** are used to visualize survival probabilities while controlling for covariates in a **Cox proportional hazards model**. 
 
 Unlike traditional Kaplan-Meier curves, which display raw survival probabilities by group (e.g., treatment vs. control), adjusted survival curves take into account the effects of other variables in the model.
 
