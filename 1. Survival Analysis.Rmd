@@ -1,0 +1,94 @@
+---
+title: "Survival Analysis"
+subtitle: "Intervire of GRAIL in Feb 2025"
+author: "Yuhui Cao"
+date: "2025.02.25 Tue"
+output: pdf_document
+---
+
+# 1. Install and Load the Required Packages:
+```{r}
+# install.packages("survival")
+library(survival)
+```
+
+```{r}
+#install.packages("survminer")  # For better visualization
+library(survminer)
+```
+
+
+# 2. Prepare Data:
+## original data - NOT significant in Log-Rank Test
+```{r}
+# Sample dataset
+data <- data.frame(
+  time      = c(5, 8, 12, 20, 22, 30, 35, 40),
+  status    = c(1, 0, 1, 1, 0, 1, 0, 1),  # 1 = Event, 0 = Censored
+  treatment = c(0, 0, 1, 1, 0, 1, 1, 0)  # 0 = Control, 1 = Treatment
+)
+```
+
+
+## my updated data - significant in Log-Rank Test
+```{r}
+data <- data.frame(
+  time      = c(5, 8, 12, 22, 40,    12, 20, 30, 35, 38, 40),
+  status    = c(1, 1, 1,  1,  1,     1,  1,  1,  0,  0,  0),  # 1 = Event, 0 = Censored
+  treatment = c(0, 0, 0,  0,  0,     1,  1,  1,  1,  1,  1),  # 0 = Control, 1 = Treatment
+  # add age variable - to fit Cox Proportional Hazards Model
+  age       = c(70,65,50, 40, 42,    72, 64, 55, 50, 30, 40)
+)
+
+data
+```
+
+# 3. Fit a Kaplan-Meier Survival Curve:
+```{r}
+# Fit Kaplan-Meier survival curve
+km_fit <- survfit(Surv(time, status) ~ treatment, data = data)
+summary(km_fit)
+```
+
+```{r}
+# Plot the survival curves
+ggsurvplot(km_fit, data = data,
+           pval = TRUE,            # Display p-value from log-rank test
+           conf.int = TRUE,        # Show confidence intervals
+           risk.table = TRUE,      # Show risk table below the plot
+           ggtheme = theme_minimal(),
+           xlab = "Time (Months)",
+           ylab = "Survival Probability",
+           legend.labs = c("Control", "Treatment"),
+           title = "Kaplan-Meier Survival Curves")
+```
+
+# 4. Conduct Log-Rank Test:
+## To compare survival curves between groups:
+```{r}
+# Log-rank test
+logrank_test <- survdiff(Surv(time, status) ~ treatment, data = data)
+print(logrank_test)
+```
+## This tests the null hypothesis that there IS difference between the survival curves.
+
+
+
+
+
+
+# Summary and Next: 
+ - Kaplan-Meier Curves: Visual comparison of survival between groups.
+ - Log-Rank Test: Statistical test for differences in survival curves.
+ - Cox Model (Next): Estimates hazard ratios to quantify the effect of treatment and covariates on survival.
+
+
+
+
+
+
+
+
+
+
+
